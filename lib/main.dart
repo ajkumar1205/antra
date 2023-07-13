@@ -1,3 +1,4 @@
+import 'package:antra/provider/songlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AudioPlayerProvider())
+        ChangeNotifierProvider(create: (context) => AudioPlayerProvider()),
+        ChangeNotifierProvider(create: (context) => SongList())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

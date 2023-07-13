@@ -1,42 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 
 import '../design/color.dart';
-import './audio_player_screen.dart';
+import '../widgets/home/body_widget.dart';
 
-class HomeTabsManagingScreen extends StatefulWidget {
+class HomeTabsManagingScreen extends StatelessWidget {
   const HomeTabsManagingScreen({super.key});
-
-  @override
-  State<HomeTabsManagingScreen> createState() => _HomeTabsManagingScreenState();
-}
-
-class _HomeTabsManagingScreenState extends State<HomeTabsManagingScreen> {
-  List<SongModel>? songs;
-  var songLoaded = false;
-  OnAudioQuery? audioQuery;
-
-  @override
-  void initState() {
-    super.initState();
-    audioQuery = OnAudioQuery();
-    takePermission();
-  }
-
-  void takePermission() async {
-    var status = await audioQuery!.permissionsStatus();
-    while (!status) {
-      status = await audioQuery!.permissionsRequest();
-    }
-    getSongs();
-  }
-
-  void getSongs() async {
-    songs = await audioQuery!.querySongs();
-    setState(() {
-      songLoaded = true;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,51 +22,7 @@ class _HomeTabsManagingScreenState extends State<HomeTabsManagingScreen> {
           ),
         ),
       ),
-      body: !songLoaded
-          ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: songs!.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 5.0, left: 10, right: 10),
-                  child: ListTile(
-                    iconColor: textColor,
-                    tileColor: subColor,
-                    leading: CircleAvatar(
-                      backgroundColor: textColor,
-                      child: QueryArtworkWidget(
-                        id: songs![index].id,
-                        type: ArtworkType.AUDIO,
-                        errorBuilder: (_, __, ___) {
-                          return const Icon(Icons.music_note);
-                        },
-                      ),
-                    ),
-                    trailing: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.thumb_up_sharp),
-                    ),
-                    title: Text(
-                      songs![index].title,
-                      style: const TextStyle(
-                          color: color, fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Text(
-                      songs![index].artist!,
-                      style: const TextStyle(color: textColor),
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              PlayerScreen(song: songs![index]),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
+      body: const Body(),
     );
   }
 }

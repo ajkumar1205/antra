@@ -1,54 +1,23 @@
-import 'dart:js_interop';
+import 'dart:ffi';
 
+import 'package:antra/provider/songlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
+
+import '../provider/audioplayer_provider.dart';
 
 // import '../model/songs.dart';
 
-class PlayerScreen extends StatefulWidget {
-  final SongModel song;
-  const PlayerScreen({super.key, required this.song});
-
-  @override
-  State<PlayerScreen> createState() => _PlayerScreenState();
-}
-
-class _PlayerScreenState extends State<PlayerScreen> {
-  var value = 0.0;
-
-  Duration? length;
-  Duration? current;
-
-  AudioPlayer? player;
-
-  @override
-  void initState() {
-    player = AudioPlayer();
-    super.initState();
-    play();
-  }
-
-  void play() async {
-    await player!.play(DeviceFileSource(widget.song.data));
-    length = await player!.getDuration();
-    current = await player!.getCurrentPosition();
-    print("The song to be played ${widget.song.data}");
-  }
-
-  @override
-  void dispose() {
-    stop();
-    super.dispose();
-  }
-
-  void stop() async {
-    await player!.stop();
-    super.dispose();
-  }
+class PlayerScreen extends StatelessWidget {
+  final int songIndex;
+  const PlayerScreen({super.key, required this.songIndex});
 
   @override
   Widget build(BuildContext context) {
+    final list = Provider.of<SongList>(context, listen: false);
+    final player = Provider.of<AudioPlayerProvider>(context);
+    final length = Duration(milliseconds: list.songs![songIndex].duration!);
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -82,7 +51,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   color: Colors.black87,
                 ),
                 child: QueryArtworkWidget(
-                  id: widget.song.id,
+                  id: list.songs![songIndex].id,
                   type: ArtworkType.AUDIO,
                   artworkFit: BoxFit.fill,
                   artworkBorder: BorderRadius.circular(20),
@@ -94,70 +63,76 @@ class _PlayerScreenState extends State<PlayerScreen> {
                 ),
               ),
             ),
-            Expanded(
-              child: Column(
-                children: [
-                  // TITLE OF THE SONG
-                  Text(
-                    widget.song.title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 25,
-                    ),
-                  ),
-                  // ARTISTS NAMES
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: Text(
-                      widget.song.artist!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                  // AUIDO TIME SLIDER
-                  const SizedBox(height: 50),
-                  Slider(
-                    value: value,
-                    onChanged: (val) {
-                      setState(() {
-                        value = val;
-                      });
-                    },
-                    min: 0,
-                    max: (widget.song.duration! / 1000),
-                    divisions: widget.song.duration! ~/ 1000,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 22),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            StreamBuilder<Duration>(
+                stream: player.position(),
+                builder: (context, snapshot) {
+                  return Expanded(
+                    child: Column(
                       children: [
-                        // CURRENT TIME OF AUDIO
-
+                        // TITLE OF THE SONG
                         Text(
-                          "${current!.inMinutes}:${current!.inSeconds % 60}",
+                          list.songs![songIndex].title,
                           style: const TextStyle(
-                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
                             color: Colors.white,
+                            fontSize: 25,
                           ),
                         ),
-                        // LENGTH OF THE SONG
-                        Text(
-                          "${length!.inMinutes}:${length!.inSeconds % 60}",
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Colors.white,
+                        // ARTISTS NAMES
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25),
+                          child: Text(
+                            list.songs![songIndex].artist!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                        // AUIDO TIME SLIDER
+                        const SizedBox(height: 50),
+                        Slider(
+                          value: snapshot.hasData
+                              ? snapshot.data!.inSeconds.toDouble()
+                              : 0.toDouble(),
+                          onChanged: (val) {},
+                          min: 0,
+                          max: (list.songs![songIndex].duration! / 1000),
+                          divisions: list.songs![songIndex].duration! ~/ 1000,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 22),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // CURRENT TIME OF AUDIO
+
+                              Text(
+                                // "${current!.inMinutes}:${current!.inSeconds % 60}",
+                                snapshot.hasData
+                                    ? "${snapshot.data!.inMinutes}:${(snapshot.data!.inSeconds) % 60}"
+                                    : "00:00",
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              // LENGTH OF THE SONG
+                              Text(
+                                // "${length!.inMinutes}:${length!.inSeconds % 60}",
+                                "${length.inMinutes}:${(length.inSeconds) % 60}",
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.white,
+                                ),
+                              )
+                            ],
                           ),
                         )
                       ],
                     ),
-                  )
-                ],
-              ),
-            )
+                  );
+                })
           ],
         ),
       ),
