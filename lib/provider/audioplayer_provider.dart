@@ -10,12 +10,20 @@ class AudioPlayerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get playing {
+    return _player.playing;
+  }
+
   Stream<Duration> position() {
     return _player.createPositionStream();
   }
 
-  void pause() async {
-    await _player.pause();
+  void togglePlayer() async {
+    if (_player.playing) {
+      await _player.pause();
+    } else {
+      _player.play();
+    }
     notifyListeners();
   }
 

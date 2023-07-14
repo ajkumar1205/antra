@@ -25,21 +25,25 @@ class Body extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(top: 5.0, left: 10, right: 10),
                   child: ListTile(
+                    horizontalTitleGap: 10,
                     iconColor: textColor,
                     tileColor: subColor,
                     leading: CircleAvatar(
                       backgroundColor: textColor,
-                      child: QueryArtworkWidget(
-                        id: list.songs![index].id,
-                        type: ArtworkType.AUDIO,
-                        errorBuilder: (_, __, ___) {
-                          return const Icon(Icons.music_note);
-                        },
+                      child: Hero(
+                        tag: "audiobanner",
+                        child: QueryArtworkWidget(
+                          id: list.songs![index].id,
+                          type: ArtworkType.AUDIO,
+                          errorBuilder: (_, __, ___) {
+                            return const Icon(Icons.music_note);
+                          },
+                        ),
                       ),
                     ),
                     trailing: IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.thumb_up_sharp),
+                      icon: const Icon(Icons.favorite_border_rounded),
                     ),
                     title: Text(
                       list.songs![index].title,
