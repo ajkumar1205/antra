@@ -30,11 +30,4 @@ class AudioPlayerProvider extends ChangeNotifier {
   void resumePlaying() async {
     await _player.play();
   }
-
-  void stopAndChangeSong(String path) async {
-    await _player.stop();
-    _player.setUrl(path);
-    _player.play();
-    notifyListeners();
-  }
 }
