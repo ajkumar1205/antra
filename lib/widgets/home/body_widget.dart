@@ -22,12 +22,16 @@ class Body extends StatelessWidget {
           : ListView.builder(
               itemCount: list.songs!.length,
               itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.only(top: 5.0, left: 10, right: 10),
+                return Card(
+                  color: subColor,
+                  elevation: 1,
+                  shadowColor: Colors.transparent,
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: ListTile(
                     horizontalTitleGap: 10,
                     iconColor: textColor,
-                    tileColor: subColor,
+                    // tileColor: subColor,
                     leading: CircleAvatar(
                       backgroundColor: textColor,
                       child: Hero(

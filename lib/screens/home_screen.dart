@@ -11,18 +11,28 @@ class HomeTabsManagingScreen extends StatelessWidget {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: bgColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
-          margin: const EdgeInsets.only(top: 25, left: 30, right: 30),
-          decoration: BoxDecoration(
-            color: subColor,
-            borderRadius: BorderRadius.circular(30),
+      // appBar: PreferredSize(
+      //   preferredSize: const Size.fromHeight(60),
+      //   child: AnimatedContainer(
+      //     duration: const Duration(milliseconds: 500),
+      //     margin: const EdgeInsets.only(top: 25, left: 30, right: 30),
+      //     decoration: BoxDecoration(
+      //       color: subColor,
+      //       borderRadius: BorderRadius.circular(30),
+      //     ),
+      //   ),
+      // ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/background.png"),
           ),
         ),
+        child: const Body(),
       ),
-      body: const Body(),
+      // bottomNavigationBar: Container,
     );
   }
 }
