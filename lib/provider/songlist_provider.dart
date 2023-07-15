@@ -11,6 +11,7 @@ class SongList extends ChangeNotifier {
     while (!status) {
       status = await audioQuery.permissionsRequest();
     }
+
     if (!hasSongs) getSongs();
   }
 

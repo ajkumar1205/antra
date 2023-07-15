@@ -18,7 +18,7 @@ class PlayPauseButton extends StatelessWidget {
       backgroundColor: color,
       child: IconButton(
         iconSize: 60,
-        color: Colors.black,
+        color: Colors.white,
         onPressed: () {
           player.togglePlayer();
         },

@@ -19,7 +19,7 @@ class PlayerScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          color: Colors.white,
+          color: Colors.black,
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop();
@@ -31,7 +31,12 @@ class PlayerScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.black87, Colors.black],
+            colors: [
+              Colors.white,
+              Colors.grey,
+              Colors.black87,
+              Colors.black,
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),

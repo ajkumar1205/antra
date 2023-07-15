@@ -24,8 +24,6 @@ class Body extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Card(
                   color: subColor,
-                  elevation: 1,
-                  shadowColor: Colors.transparent,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: ListTile(
@@ -59,7 +57,8 @@ class Body extends StatelessWidget {
                       style: const TextStyle(color: textColor),
                     ),
                     onTap: () {
-                      player.play(list.songs![index].data);
+                      player.setSong = list.songs![index];
+                      player.play();
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (BuildContext context) =>

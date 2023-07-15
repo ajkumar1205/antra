@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const subColor = Colors.black;
-const bgColor = Color.fromARGB(255, 31, 31, 31);
-const textColor = Colors.white;
-const color = Color.fromARGB(255, 255, 185, 10);
+const subColor = Color.fromARGB(255, 164, 164, 164);
+const bgColor = Colors.white;
+const textColor = Colors.black;
+const color = Colors.brown;
