@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import './design/color.dart';
 import './screens/home_screen.dart';
 import './provider/audioplayer_provider.dart';
+// import './functions/sharedpreferences/last_played.dart';
 
 void main() {
   runApp(const MyApp());

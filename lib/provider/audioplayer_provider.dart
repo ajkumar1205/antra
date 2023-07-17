@@ -2,6 +2,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
+import '../functions/sharedpreferences/last_played.dart';
+
 class AudioPlayerProvider extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
   SongModel? _song;
@@ -13,6 +15,7 @@ class AudioPlayerProvider extends ChangeNotifier {
         togglePlayer();
       }
     });
+    _playerInitialised = true;
   }
 
   set setSong(SongModel s) {
@@ -29,16 +32,16 @@ class AudioPlayerProvider extends ChangeNotifier {
   }
 
   String get getArtist {
-    return _song == null ? "SongTitle" : _song!.artist!;
+    return _song == null ? LastPlayed.artist : _song!.artist!;
   }
 
   String get getTitle {
-    return _song == null ? "SongArtist" : _song!.title;
+    return _song == null ? LastPlayed.title : _song!.title;
   }
 
   void play() async {
     if (!_playerInitialised) init();
-    await _player.setUrl(_song!.data);
+    await _player.setUrl(_song == null ? LastPlayed.songPath : _song!.data);
     _player.play();
     notifyListeners();
   }

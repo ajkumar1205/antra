@@ -3,11 +3,27 @@ import 'package:provider/provider.dart';
 
 import '../../provider/audioplayer_provider.dart';
 import '../../design/color.dart';
+import '../../functions/sharedpreferences/last_played.dart';
 
-class RoundedBottomBar extends StatelessWidget {
+class RoundedBottomBar extends StatefulWidget {
   const RoundedBottomBar({
     super.key,
   });
+
+  @override
+  State<RoundedBottomBar> createState() => _RoundedBottomBarState();
+}
+
+class _RoundedBottomBarState extends State<RoundedBottomBar> {
+  @override
+  void initState() {
+    initshared();
+    super.initState();
+  }
+
+  void initshared() async {
+    await LastPlayed.init();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,14 +113,17 @@ class RoundedBottomBar extends StatelessWidget {
               ],
             );
           }),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
+              // AnimatedContainer(
+              //   duration: const Duration(milliseconds: 400),
               Icon(
                 Icons.home,
                 size: 25,
                 color: bgColor,
               ),
+              // ),
               Icon(
                 Icons.shuffle,
                 size: 25,

@@ -13,17 +13,6 @@ class HomeTabsManagingScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       extendBody: true,
       backgroundColor: bgColor,
-      // appBar: PreferredSize(
-      //   preferredSize: const Size.fromHeight(60),
-      //   child: AnimatedContainer(
-      //     duration: const Duration(milliseconds: 500),
-      //     margin: const EdgeInsets.only(top: 25, left: 30, right: 30),
-      //     decoration: BoxDecoration(
-      //       color: subColor,
-      //       borderRadius: BorderRadius.circular(30),
-      //     ),
-      //   ),
-      // ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
