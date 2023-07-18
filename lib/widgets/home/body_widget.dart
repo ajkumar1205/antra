@@ -1,3 +1,4 @@
+import 'package:antra/functions/sharedpreferences/last_played.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -58,13 +59,8 @@ class Body extends StatelessWidget {
                     ),
                     onTap: () {
                       player.setSong = list.songs![index];
+                      player.setIndex(index);
                       player.play();
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              PlayerScreen(songIndex: index),
-                        ),
-                      );
                     },
                   ),
                 );

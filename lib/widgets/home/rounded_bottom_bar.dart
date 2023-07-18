@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../provider/audioplayer_provider.dart';
 import '../../design/color.dart';
 import '../../functions/sharedpreferences/last_played.dart';
+import '../../screens/audio_player_screen.dart';
 
 class RoundedBottomBar extends StatefulWidget {
   const RoundedBottomBar({
@@ -16,16 +17,6 @@ class RoundedBottomBar extends StatefulWidget {
 
 class _RoundedBottomBarState extends State<RoundedBottomBar> {
   @override
-  void initState() {
-    initshared();
-    super.initState();
-  }
-
-  void initshared() async {
-    await LastPlayed.init();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -33,62 +24,75 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
         color: Colors.black,
       ),
       height: 72,
-      // height: 20,
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
       child: Column(
         children: [
           Consumer<AudioPlayerProvider>(builder: (context, player, child) {
             return Stack(
               children: [
-                Container(
-                  padding: const EdgeInsets.only(right: 20, left: 25),
-                  height: 45,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            player.getTitle,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
+                InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const PlayerScreen()),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.only(right: 20, left: 25),
+                    height: 45,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FutureBuilder(
+                              future: player.getTitle,
+                              builder: (context, snapshot) => Text(
+                                snapshot.data!,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
+                              ),
                             ),
-                          ),
-                          Text(
-                            player.getArtist,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
+                            FutureBuilder(
+                              future: player.getArtist,
+                              builder: (context, snapshot) => Text(
+                                snapshot.data!,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          IconButton(
-                            constraints: const BoxConstraints(maxWidth: 10),
-                            icon: Icon(
-                              Icons.favorite_border,
-                              color: const Color.fromARGB(255, 127, 64, 64),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            IconButton(
+                              constraints: const BoxConstraints(maxWidth: 10),
+                              icon: Icon(
+                                Icons.favorite_border,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {},
                             ),
-                            onPressed: () {},
-                          ),
-                          IconButton(
-                            constraints: const BoxConstraints(maxWidth: 10),
-                            padding: const EdgeInsets.all(0),
-                            icon: Icon(
-                              player.playing ? Icons.pause : Icons.play_arrow,
-                              color: Colors.white,
+                            IconButton(
+                              constraints: const BoxConstraints(maxWidth: 10),
+                              padding: const EdgeInsets.all(0),
+                              icon: Icon(
+                                player.playing ? Icons.pause : Icons.play_arrow,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                player.togglePlayer();
+                              },
                             ),
-                            onPressed: () {
-                              player.togglePlayer();
-                            },
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Positioned(
@@ -97,23 +101,42 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
                     height: 2,
                     width: MediaQuery.of(context).size.width - 60,
                     child: StreamBuilder<Duration>(
-                        stream: player.position(),
-                        builder: (context, snapshot) {
-                          double val = snapshot.hasData
-                              ? snapshot.data!.inMilliseconds /
-                                  player.songDuration.inMilliseconds
-                              : 0.0;
+                      stream: player.position(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          double val = snapshot.data!.inMilliseconds /
+                              player.songDuration.inMilliseconds;
+
+                          LastPlayed.setPlayedDuration(val.toInt());
                           return LinearProgressIndicator(
                             backgroundColor: Colors.white,
                             value: val,
                           );
-                        }),
+                        } else {
+                          return FutureBuilder(
+                            future: LastPlayed.playedDuration,
+                            builder: (context, played) {
+                              return FutureBuilder(
+                                future: LastPlayed.songLength,
+                                builder: (context, length) {
+                                  return LinearProgressIndicator(
+                                    backgroundColor: Colors.white,
+                                    value: played.data!.inMilliseconds /
+                                        length.data!.inMilliseconds,
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],
             );
           }),
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // AnimatedContainer(

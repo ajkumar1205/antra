@@ -1,19 +1,17 @@
-import 'package:antra/provider/songlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/player/play_pause_button.dart';
 import '../widgets/player/audio_duration_details.dart';
+import '../provider/audioplayer_provider.dart';
 
 class PlayerScreen extends StatelessWidget {
-  final int songIndex;
-  const PlayerScreen({super.key, required this.songIndex});
+  const PlayerScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final list = Provider.of<SongList>(context, listen: false);
-    final length = Duration(milliseconds: list.songs![songIndex].duration!);
+    final player = Provider.of<AudioPlayerProvider>(context, listen: false);
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -54,7 +52,7 @@ class PlayerScreen extends StatelessWidget {
                 child: Hero(
                   tag: "audiobanner",
                   child: QueryArtworkWidget(
-                    id: list.songs![songIndex].id,
+                    id: player.songId,
                     type: ArtworkType.AUDIO,
                     artworkFit: BoxFit.fill,
                     artworkBorder: BorderRadius.circular(20),
@@ -71,28 +69,39 @@ class PlayerScreen extends StatelessWidget {
               child: Column(
                 children: [
                   // TITLE OF THE SONG
-                  Text(
-                    list.songs![songIndex].title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 25,
-                    ),
+                  FutureBuilder(
+                    future: player.getTitle,
+                    builder: (context, snapshot) {
+                      return Text(
+                        snapshot.data!,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 25,
+                        ),
+                      );
+                    },
                   ),
                   // ARTISTS NAMES
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: Text(
-                      list.songs![songIndex].artist!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                      ),
+                    child: FutureBuilder(
+                      future: player.getArtist,
+                      builder: (context, snapshot) {
+                        return Text(
+                          snapshot.data!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 25,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   // AUDIO TIME SLIDER
                   const SizedBox(height: 50),
-                  AudioDurationDetail(songIndex: songIndex, length: length),
+                  const AudioDurationDetail(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [

@@ -2,23 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider/audioplayer_provider.dart';
-import '../../provider/songlist_provider.dart';
 import '../../design/color.dart';
 
 class AudioDurationDetail extends StatelessWidget {
-  const AudioDurationDetail({
-    super.key,
-    required this.songIndex,
-    required this.length,
-  });
-
-  final int songIndex;
-  final Duration length;
+  const AudioDurationDetail({super.key});
 
   @override
   Widget build(BuildContext context) {
     final player = Provider.of<AudioPlayerProvider>(context);
-    final list = Provider.of<SongList>(context, listen: false);
     return StreamBuilder<Duration>(
       stream: player.position(),
       builder: (context, snapshot) {
@@ -30,8 +21,8 @@ class AudioDurationDetail extends StatelessWidget {
                   : 0.toDouble(),
               onChanged: (val) {},
               min: 0,
-              max: (list.songs![songIndex].duration! / 1000),
-              divisions: list.songs![songIndex].duration! ~/ 1000,
+              max: (player.songDuration.inMilliseconds / 1000),
+              divisions: player.songDuration.inMilliseconds ~/ 1000,
               thumbColor: color,
               activeColor: color,
             ),
@@ -53,7 +44,7 @@ class AudioDurationDetail extends StatelessWidget {
                   ),
                   // LENGTH OF THE SONG
                   Text(
-                    "${length.inMinutes}:${(length.inSeconds) % 60}",
+                    "${player.songDuration.inMinutes}:${(player.songDuration.inSeconds) % 60}",
                     style: const TextStyle(
                       fontSize: 13,
                       color: Colors.white,
