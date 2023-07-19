@@ -24,8 +24,8 @@ class AudioPlayerProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<int> get songIndex async {
-    return _songIndex ?? await LastPlayed.index;
+  int get songIndex {
+    return _songIndex ?? LastPlayed.index;
   }
 
   set setSong(SongModel s) {
@@ -34,30 +34,30 @@ class AudioPlayerProvider extends ChangeNotifier {
   }
 
   int get songId {
-    return _song == null ? 0 : _song!.id;
+    return _song == null ? LastPlayed.songId : _song!.id;
   }
 
   Duration get songDuration {
     return Duration(milliseconds: _song != null ? _song!.duration! : 1);
   }
 
-  Future<String> get getArtist async {
-    return _song == null ? await LastPlayed.artist : _song!.artist!;
+  String get getArtist {
+    return _song == null ? LastPlayed.artist : _song!.artist!;
   }
 
-  Future<String> get getTitle async {
-    return _song == null ? await LastPlayed.title : _song!.title;
+  String get getTitle {
+    return _song == null ? LastPlayed.title : _song!.title;
   }
 
   void play() async {
     if (!_playerInitialised) init();
-    await _player
-        .setUrl(_song == null ? await LastPlayed.songPath : _song!.data);
+    await _player.setUrl(_song == null ? LastPlayed.songPath : _song!.data);
     _player.play();
     LastPlayed.setSongPath(_song!.data);
     LastPlayed.setTitle(_song!.title);
     LastPlayed.setArtist(_song!.artist!);
     LastPlayed.setSongLength(_song!.duration!);
+    LastPlayed.setSongId(_song!.id);
     notifyListeners();
   }
 
@@ -66,13 +66,14 @@ class AudioPlayerProvider extends ChangeNotifier {
   }
 
   Stream<Duration> position() {
-    return _player.createPositionStream()
-      ..listen((event) {
-        LastPlayed.setPlayedDuration(event.inMilliseconds);
-      });
+    return _player.createPositionStream();
   }
 
   void togglePlayer() async {
+    if (_song == null && !_player.playing) {
+      play();
+      return;
+    }
     if (_player.playing) {
       await _player.pause();
     } else {

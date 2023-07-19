@@ -17,6 +17,17 @@ class RoundedBottomBar extends StatefulWidget {
 
 class _RoundedBottomBarState extends State<RoundedBottomBar> {
   @override
+  void initState() {
+    super.initState();
+    initialisation();
+  }
+
+  void initialisation() async {
+    await LastPlayed.init();
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
@@ -46,24 +57,18 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            FutureBuilder(
-                              future: player.getTitle,
-                              builder: (context, snapshot) => Text(
-                                snapshot.data!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
+                            Text(
+                              player.getTitle,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
                               ),
                             ),
-                            FutureBuilder(
-                              future: player.getArtist,
-                              builder: (context, snapshot) => Text(
-                                snapshot.data!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                ),
+                            Text(
+                              player.getArtist,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
                               ),
                             ),
                           ],
@@ -103,32 +108,14 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
                     child: StreamBuilder<Duration>(
                       stream: player.position(),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          double val = snapshot.data!.inMilliseconds /
-                              player.songDuration.inMilliseconds;
-
-                          LastPlayed.setPlayedDuration(val.toInt());
-                          return LinearProgressIndicator(
-                            backgroundColor: Colors.white,
-                            value: val,
-                          );
-                        } else {
-                          return FutureBuilder(
-                            future: LastPlayed.playedDuration,
-                            builder: (context, played) {
-                              return FutureBuilder(
-                                future: LastPlayed.songLength,
-                                builder: (context, length) {
-                                  return LinearProgressIndicator(
-                                    backgroundColor: Colors.white,
-                                    value: played.data!.inMilliseconds /
-                                        length.data!.inMilliseconds,
-                                  );
-                                },
-                              );
-                            },
-                          );
-                        }
+                        double val = snapshot.hasData
+                            ? snapshot.data!.inMilliseconds /
+                                player.songDuration.inMilliseconds
+                            : 0.0;
+                        return LinearProgressIndicator(
+                          backgroundColor: Colors.white,
+                          value: val,
+                        );
                       },
                     ),
                   ),

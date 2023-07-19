@@ -1,65 +1,66 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LastPlayed {
-  static Future<void> setSongPath(String path) async {
-    await SharedPreferences.getInstance()
-        .then((value) => value.setString('path', path));
+  static SharedPreferences? _instance;
+
+  static Future<void> init() async {
+    _instance = await SharedPreferences.getInstance();
   }
 
-  static Future<void> setSongIndex(int index) async {
-    await SharedPreferences.getInstance()
-        .then((value) => value.setInt('index', index));
+  static void setSongId(int id) {
+    _instance!.setInt('id', id);
   }
 
-  static Future<void> setSongLength(int millis) async {
-    await SharedPreferences.getInstance()
-        .then((value) => value.setInt('length', millis));
+  static void setSongPath(String path) {
+    _instance!.setString('path', path);
   }
 
-  static Future<void> setPlayedDuration(int millis) async {
-    await SharedPreferences.getInstance()
-        .then((value) => value.setInt('duration', millis));
+  static void setSongIndex(int index) {
+    _instance!.setInt('index', index);
   }
 
-  static Future<void> setArtist(String artist) async {
-    await SharedPreferences.getInstance()
-        .then((value) => value.setString('artist', artist));
+  static void setSongLength(int millis) {
+    _instance!.setInt('length', millis);
   }
 
-  static Future<void> setTitle(String title) async {
-    await SharedPreferences.getInstance()
-        .then((value) => value.setString('title', title));
+  // static void setPlayedDuration(int millis) {
+  //   _instance!.setInt('duration', millis);
+  // }
+
+  static void setArtist(String artist) {
+    _instance!.setString('artist', artist);
   }
 
-  static Future<Duration> get songLength async {
-    final instance = await SharedPreferences.getInstance();
-    final millis = instance.getInt('length') ?? 0;
+  static void setTitle(String title) {
+    _instance!.setString('title', title);
+  }
+
+  static Duration get songLength {
+    final millis = _instance!.getInt('length') ?? 0;
     return Duration(milliseconds: millis);
   }
 
-  static Future<Duration> get playedDuration async {
-    final instance = await SharedPreferences.getInstance();
-    final millis = instance.getInt('duration') ?? 0;
-    return Duration(milliseconds: millis);
+  // static Duration get playedDuration {
+  //   final millis = _instance!.getInt('duration') ?? 0;
+  //   return Duration(milliseconds: millis);
+  // }
+  static int get songId {
+    return _instance!.getInt('id') ?? 0;
   }
 
-  static Future<String> get songPath async {
-    final instance = await SharedPreferences.getInstance();
-    return instance.getString('path') ?? '';
+  static String get songPath {
+    return _instance!.getString('path') ?? '';
   }
 
-  static Future<String> get title async {
-    final instance = await SharedPreferences.getInstance();
-    return instance.getString('title') ?? '';
+  static String get title {
+    return _instance!.getString('title') ?? '';
   }
 
-  static Future<String> get artist async {
-    final instance = await SharedPreferences.getInstance();
-    return instance.getString('artist') ?? '';
+  static String get artist {
+    return _instance!.getString('artist') ?? '';
   }
 
-  static Future<int> get index async {
-    final instance = await SharedPreferences.getInstance();
-    return instance.getInt('index') ?? 0;
+  static int get index {
+    return _instance!.getInt('index') ?? 0;
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/player/play_pause_button.dart';
 import '../widgets/player/audio_duration_details.dart';
 import '../provider/audioplayer_provider.dart';
+import '../widgets/player/audio_banner.dart';
 
 class PlayerScreen extends StatelessWidget {
   const PlayerScreen({super.key});
@@ -49,54 +49,31 @@ class PlayerScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.black87,
                 ),
-                child: Hero(
-                  tag: "audiobanner",
-                  child: QueryArtworkWidget(
-                    id: player.songId,
-                    type: ArtworkType.AUDIO,
-                    artworkFit: BoxFit.fill,
-                    artworkBorder: BorderRadius.circular(20),
-                    nullArtworkWidget: const Icon(
-                      Icons.music_note,
-                      color: Colors.white,
-                      size: 150,
-                    ),
-                  ),
-                ),
+                child: const AudioBanner(),
               ),
             ),
             Expanded(
               child: Column(
                 children: [
                   // TITLE OF THE SONG
-                  FutureBuilder(
-                    future: player.getTitle,
-                    builder: (context, snapshot) {
-                      return Text(
-                        snapshot.data!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 25,
-                        ),
-                      );
-                    },
+                  Text(
+                    player.getTitle,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 25,
+                    ),
                   ),
                   // ARTISTS NAMES
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 25),
-                    child: FutureBuilder(
-                      future: player.getArtist,
-                      builder: (context, snapshot) {
-                        return Text(
-                          snapshot.data!,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 25,
-                          ),
-                        );
-                      },
+                    child: Text(
+                      player.getArtist,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 25,
+                      ),
                     ),
                   ),
                   // AUDIO TIME SLIDER

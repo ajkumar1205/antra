@@ -34,7 +34,7 @@ class Body extends StatelessWidget {
                     leading: CircleAvatar(
                       backgroundColor: textColor,
                       child: Hero(
-                        tag: "audiobanner",
+                        tag: list.songs![index].id,
                         child: QueryArtworkWidget(
                           id: list.songs![index].id,
                           type: ArtworkType.AUDIO,
