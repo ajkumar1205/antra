@@ -51,11 +51,16 @@ class Body extends StatelessWidget {
                     title: Text(
                       list.songs![index].title,
                       style: const TextStyle(
-                          color: color, fontWeight: FontWeight.bold),
+                        color: color,
+                        fontWeight: FontWeight.w900,
+                      ),
                     ),
                     subtitle: Text(
                       list.songs![index].artist!,
-                      style: const TextStyle(color: textColor),
+                      style: const TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     onTap: () {
                       player.setSong = list.songs![index];

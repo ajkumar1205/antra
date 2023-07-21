@@ -45,7 +45,8 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                          builder: (context) => const PlayerScreen()),
+                        builder: (context) => const PlayerScreen(),
+                      ),
                     );
                   },
                   child: Container(
@@ -54,24 +55,30 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              player.getTitle,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 201,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                player.getTitle,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  overflow: TextOverflow.ellipsis,
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                ),
                               ),
-                            ),
-                            Text(
-                              player.getArtist,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
+                              Text(
+                                player.getArtist,
+                                style: const TextStyle(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Row(
                           children: [
