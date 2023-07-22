@@ -49,6 +49,14 @@ class AudioPlayerProvider extends ChangeNotifier {
     return _song == null ? LastPlayed.title : _song!.title;
   }
 
+  String get getComposer {
+    return _song == null ? "" : _song!.composer!;
+  }
+
+  String get getAlbum {
+    return _song == null ? "" : _song!.album!;
+  }
+
   void play() async {
     if (!_playerInitialised) init();
     await _player.setUrl(_song == null ? LastPlayed.songPath : _song!.data);

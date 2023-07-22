@@ -15,23 +15,51 @@ class PlayerScreen extends StatefulWidget {
 }
 
 class _PlayerScreenState extends State<PlayerScreen> {
-  // late final AnimationController _controller = AnimationController(
-  //   vsync: this,
-  //   duration: const Duration(seconds: 3),
-  // )..repeat();
-
-  // late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-  //   begin: const Offset(-1.5, 0),
-  //   end: const Offset(1.5, 0.0),
-  // ).animate(CurvedAnimation(
-  //   parent: _controller,
-  //   curve: Curves.linear,
-  // ));
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
+  void showSheet(BuildContext context, AudioPlayerProvider player) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.black,
+      constraints: const BoxConstraints(
+        maxHeight: 400,
+      ),
+      builder: (context) => ListView(
+        children: [
+          ListTile(
+            title: Text(
+              "Title: ${player.getTitle}",
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Artist: ${player.getArtist}",
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Composer: ${player.getComposer}",
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+          ListTile(
+            title: Text(
+              "Album: ${player.getAlbum}",
+              style: const TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +70,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         leading: IconButton(
-          color: Colors.black,
+          color: color,
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () {
             Navigator.of(context).pop();
@@ -54,7 +82,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/background-dark.jpeg'),
+            image: AssetImage('assets/images/background-dark.jpg'),
             fit: BoxFit.cover,
           ),
           gradient: LinearGradient(
@@ -90,7 +118,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         horizontal: 25, vertical: 10),
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color.fromARGB(190, 255, 255, 255),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -99,7 +127,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       style: const TextStyle(
                         overflow: TextOverflow.ellipsis,
                         fontWeight: FontWeight.w900,
-                        color: color,
+                        color: Colors.black,
                         fontSize: 25,
                       ),
                     ),
@@ -111,7 +139,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                         horizontal: 25, vertical: 10),
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color.fromARGB(190, 255, 255, 255),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
@@ -119,7 +147,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: color,
+                        color: Colors.black,
                         fontSize: 23,
                       ),
                     ),
@@ -161,7 +189,9 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           ),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showSheet(context, player);
+                          },
                           icon: const Icon(
                             Icons.info,
                             color: Colors.white,
@@ -214,56 +244,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class Check extends StatelessWidget {
-  const Check({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100,
-      child: Center(
-        child: Stack(
-          children: [
-            Container(
-              width: 200,
-              height: 55,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  IconButton(
-                    iconSize: 40,
-                    color: color,
-                    onPressed: () {},
-                    icon: const Icon(Icons.fast_rewind_rounded),
-                  ),
-                  IconButton(
-                    iconSize: 40,
-                    color: color,
-                    onPressed: () {},
-                    icon: const Icon(Icons.fast_forward_rounded),
-                  ),
-                ],
-              ),
-            ),
-            const Positioned(
-              top: -10,
-              child: PlayPauseButton(),
             ),
           ],
         ),

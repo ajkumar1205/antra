@@ -38,16 +38,20 @@ class AudioDurationDetail extends StatelessWidget {
                         ? "${snapshot.data!.inMinutes}:${(snapshot.data!.inSeconds) % 60}"
                         : "00:00",
                     style: const TextStyle(
+                      backgroundColor: Colors.black,
                       fontSize: 13,
                       color: Colors.white,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                   // LENGTH OF THE SONG
                   Text(
                     "${player.songDuration.inMinutes}:${(player.songDuration.inSeconds) % 60}",
                     style: const TextStyle(
+                      backgroundColor: Colors.black,
                       fontSize: 13,
                       color: Colors.white,
+                      fontWeight: FontWeight.w900,
                     ),
                   )
                 ],

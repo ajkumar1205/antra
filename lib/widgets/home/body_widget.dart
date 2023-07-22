@@ -1,11 +1,9 @@
-import 'package:antra/functions/sharedpreferences/last_played.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../../provider/songlist_provider.dart';
 import '../../design/color.dart';
-import '../../screens/audio_player_screen.dart';
 import '../../provider/audioplayer_provider.dart';
 
 class Body extends StatelessWidget {
@@ -24,7 +22,7 @@ class Body extends StatelessWidget {
               itemCount: list.songs!.length,
               itemBuilder: (context, index) {
                 return Card(
-                  color: subColor,
+                  color: subColor.withOpacity(0.95),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   child: ListTile(

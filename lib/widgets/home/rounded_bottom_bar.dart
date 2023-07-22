@@ -16,6 +16,38 @@ class RoundedBottomBar extends StatefulWidget {
 }
 
 class _RoundedBottomBarState extends State<RoundedBottomBar> {
+  int index = 0;
+
+  final list = [
+    {
+      'icon': const Icon(Icons.home, size: 23, color: Colors.white),
+      'text': const Text(
+        "Home",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    },
+    {
+      'icon': const Icon(Icons.list, size: 23, color: Colors.white),
+      'text': const Text(
+        "Library",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    },
+    {
+      'icon': const Icon(Icons.favorite, size: 23, color: Colors.white),
+      'text': const Text(
+        "Favourite",
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    }
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -34,7 +66,7 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
         borderRadius: BorderRadius.circular(40),
         color: Colors.black,
       ),
-      height: 72,
+      height: 74,
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
       child: Column(
         children: [
@@ -120,6 +152,7 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
                                 player.songDuration.inMilliseconds
                             : 0.0;
                         return LinearProgressIndicator(
+                          color: color.withOpacity(0.95),
                           backgroundColor: Colors.white,
                           value: val,
                         );
@@ -130,26 +163,46 @@ class _RoundedBottomBarState extends State<RoundedBottomBar> {
               ],
             );
           }),
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // HERES THE NAVIGATION BAR STARTS
+          Stack(
             children: [
-              // AnimatedContainer(
-              //   duration: const Duration(milliseconds: 400),
-              Icon(
-                Icons.home,
-                size: 25,
-                color: bgColor,
-              ),
-              // ),
-              Icon(
-                Icons.shuffle,
-                size: 25,
-                color: bgColor,
-              ),
-              Icon(
-                Icons.list,
-                size: 25,
-                color: bgColor,
+              const SizedBox(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: list.map(
+                  (item) {
+                    final i = list.indexOf(item);
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          index = i;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: index == i ? color.withOpacity(0.7) : null,
+                        ),
+                        duration: const Duration(milliseconds: 500),
+                        child: Row(
+                          children: [
+                            item['icon']!,
+                            if (index == i)
+                              FutureBuilder(
+                                future: Future.delayed(
+                                  const Duration(milliseconds: 500),
+                                ),
+                                builder: (context, snapshot) {
+                                  return item['text']!;
+                                },
+                              )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ).toList(),
               ),
             ],
           ),

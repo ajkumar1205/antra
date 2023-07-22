@@ -18,7 +18,7 @@ class HomeTabsManagingScreen extends StatelessWidget {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/images/background-dark.jpeg'),
+            image: AssetImage('assets/images/background-dark.jpg'),
             fit: BoxFit.cover,
           ),
           gradient: LinearGradient(

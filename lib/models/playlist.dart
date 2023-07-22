@@ -19,7 +19,7 @@ class PlayList extends HiveObject {
   bool oneArtist = false;
 
   @HiveField(4)
-  ConcatenatingAudioSource? songs;
+  ConcatenatingAudioSource? songs = ConcatenatingAudioSource(children: []);
 
   PlayList({
     required this.title,
