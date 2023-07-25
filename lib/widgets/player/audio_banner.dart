@@ -24,6 +24,11 @@ class AudioBanner extends StatelessWidget {
           color: Colors.white,
           size: 150,
         ),
+        errorBuilder: (_, __, ___) => const Icon(
+          Icons.music_note,
+          color: Colors.white,
+          size: 150,
+        ),
       ),
     );
   }

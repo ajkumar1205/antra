@@ -3,17 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../functions/sharedpreferences/last_played.dart';
+import '../models/playlist.dart';
+import '../constants/hive_constants.dart';
 
 class AudioPlayerProvider extends ChangeNotifier {
   final AudioPlayer _player = AudioPlayer();
   int? _songIndex;
   SongModel? _song;
   bool _playerInitialised = false;
+  PlayList? _playlist;
 
   void init() {
     _player.processingStateStream.listen((event) {
       if (event == ProcessingState.completed) {
-        togglePlayer();
+        notifyListeners();
       }
     });
     _playerInitialised = true;
@@ -55,6 +58,49 @@ class AudioPlayerProvider extends ChangeNotifier {
 
   String get getAlbum {
     return _song == null ? "" : _song!.album!;
+  }
+
+  void setPlaylistAndAudioSource(PlayList pl) async {
+    if (_playlist == pl) {
+      return;
+    }
+    _playlist = pl;
+    final settingBox = await database.openBox(settings);
+    await settingBox.put(lastPlayedList, pl);
+    await _player.setAudioSource(
+      _playlist!.songs!,
+      initialIndex: 0,
+    );
+    await _player.setShuffleModeEnabled(false);
+    await _player.setLoopMode(LoopMode.all);
+    notifyListeners();
+  }
+
+  void seekToPosition(Duration pos) async {
+    await _player.seek(pos);
+    await _player.play();
+    notifyListeners();
+  }
+
+  void seek(int index) async {
+    setIndex(index);
+    await _player.seek(Duration.zero, index: index);
+    await _player.play();
+    notifyListeners();
+  }
+
+  void seekToNext() async {
+    setIndex(_songIndex! + 1);
+    await _player.seekToNext();
+    await _player.play();
+    notifyListeners();
+  }
+
+  void seekToPrevious() async {
+    setIndex(_songIndex! - 1);
+    await _player.seekToPrevious();
+    await _player.play();
+    notifyListeners();
   }
 
   void play() async {

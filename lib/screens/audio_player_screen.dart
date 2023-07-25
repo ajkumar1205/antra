@@ -6,6 +6,7 @@ import '../widgets/player/play_pause_button.dart';
 import '../widgets/player/audio_duration_details.dart';
 import '../provider/audioplayer_provider.dart';
 import '../widgets/player/audio_banner.dart';
+import '../widgets/player/player_button_states.dart';
 
 class PlayerScreen extends StatefulWidget {
   const PlayerScreen({super.key});
@@ -85,16 +86,6 @@ class _PlayerScreenState extends State<PlayerScreen> {
             image: AssetImage('assets/images/background-dark.jpg'),
             fit: BoxFit.cover,
           ),
-          gradient: LinearGradient(
-            colors: [
-              Colors.white,
-              Colors.grey,
-              Colors.black87,
-              Colors.black,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
         ),
         child: Column(
           children: [
@@ -152,55 +143,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
                       ),
                     ),
                   ),
-                  // AUDIO TIME SLIDER
                   const SizedBox(height: 30),
-                  Container(
-                    height: 50,
-                    margin: const EdgeInsets.symmetric(horizontal: 22),
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.repeat,
-                            color: Colors.white,
-                            size: 35,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.shuffle,
-                            color: Colors.white,
-                            size: 35,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.sync_rounded,
-                            color: Colors.white,
-                            size: 35,
-                          ),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            showSheet(context, player);
-                          },
-                          icon: const Icon(
-                            Icons.info,
-                            color: Colors.white,
-                            size: 35,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  PlayerButtonStates(onTap: showSheet),
                   const AudioDurationDetail(),
                   Stack(
                     children: [

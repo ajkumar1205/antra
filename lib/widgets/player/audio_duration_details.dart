@@ -4,35 +4,32 @@ import 'package:provider/provider.dart';
 import '../../provider/audioplayer_provider.dart';
 import '../../design/color.dart';
 
-class AudioDurationDetail extends StatelessWidget {
+class AudioDurationDetail extends StatefulWidget {
   const AudioDurationDetail({super.key});
 
+  @override
+  State<AudioDurationDetail> createState() => _AudioDurationDetailState();
+}
+
+class _AudioDurationDetailState extends State<AudioDurationDetail> {
   @override
   Widget build(BuildContext context) {
     final player = Provider.of<AudioPlayerProvider>(context);
     return StreamBuilder<Duration>(
       stream: player.position(),
       builder: (context, snapshot) {
+        double value = snapshot.hasData
+            ? snapshot.data!.inSeconds.toDouble()
+            : 0.toDouble();
         return Column(
           children: [
-            Slider(
-              value: snapshot.hasData
-                  ? snapshot.data!.inSeconds.toDouble()
-                  : 0.toDouble(),
-              onChanged: (val) {},
-              min: 0,
-              max: (player.songDuration.inMilliseconds / 1000),
-              divisions: player.songDuration.inMilliseconds ~/ 1000,
-              thumbColor: color,
-              activeColor: color,
-            ),
+            SongDurationSlider(value: value, player: player),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 22),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // CURRENT TIME OF AUDIO
-
                   Text(
                     snapshot.hasData
                         ? "${snapshot.data!.inMinutes}:${(snapshot.data!.inSeconds) % 60}"
@@ -60,6 +57,45 @@ class AudioDurationDetail extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class SongDurationSlider extends StatefulWidget {
+  const SongDurationSlider({
+    super.key,
+    required this.value,
+    required this.player,
+  });
+
+  final double value;
+  final AudioPlayerProvider player;
+
+  @override
+  State<SongDurationSlider> createState() => _SongDurationSliderState();
+}
+
+class _SongDurationSliderState extends State<SongDurationSlider> {
+  double val = 0;
+  @override
+  Widget build(BuildContext context) {
+    val = widget.value;
+    return Slider(
+      value: val,
+      onChanged: (v) {
+        setState(() {
+          val = v;
+        });
+      },
+      onChangeEnd: (val) {
+        print("Position Should be $val");
+        widget.player.seekToPosition(Duration(milliseconds: val.toInt()));
+      },
+      min: 0,
+      max: (widget.player.songDuration.inMilliseconds / 1000),
+      divisions: widget.player.songDuration.inMilliseconds ~/ 1000,
+      thumbColor: color,
+      activeColor: color,
     );
   }
 }

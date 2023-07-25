@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:just_audio/just_audio.dart';
@@ -15,11 +17,16 @@ class PlayList extends HiveObject {
   @HiveField(2)
   String? artist;
 
-  @HiveField(3)
-  bool oneArtist = false;
+  @HiveField(3, defaultValue: false)
+  bool oneArtist;
 
   @HiveField(4)
-  ConcatenatingAudioSource? songs = ConcatenatingAudioSource(children: []);
+  ConcatenatingAudioSource? songs = ConcatenatingAudioSource(
+    children: [],
+    shuffleOrder: DefaultShuffleOrder(
+      random: Random(DateTime.now().millisecond),
+    ),
+  );
 
   PlayList({
     required this.title,
