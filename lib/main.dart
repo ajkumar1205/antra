@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:hive/hive.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 
 import './design/color.dart';
 import './provider/audioplayer_provider.dart';
@@ -16,18 +15,27 @@ import './screens/home_screen.dart';
 import './functions/sharedpreferences/last_played.dart';
 import './widgets/animated_app_bar.dart';
 import './constants/bottom_bar_constants.dart';
+import './models/playlist.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  Hive.registerAdapter(PlayListAdapter());
 
-  final app = await getApplicationDocumentsDirectory();
-  final dbDirectory = app.path;
-  database = await BoxCollection.open(
-    antra,
-    {settings, playlists},
-    path: dbDirectory,
+  await JustAudioBackground.init(
+    androidNotificationChannelId: 'app.antra.notification.background',
+    androidNotificationChannelName: 'Antra',
+    androidNotificationOngoing: true,
   );
+
+  // final app = await getApplicationDocumentsDirectory();
+  // final dbDirectory = app.path;
+  // database = await BoxCollection.open(
+  //   antra,
+  //   {settings, playlists, favouriteArtists},
+  //   path: dbDirectory,
+  // );
+  await Hive.openBox(favouriteSongs);
   runApp(const MyApp());
 }
 

@@ -66,3 +66,28 @@ class PlayList extends HiveObject {
     );
   }
 }
+
+class PlayListAdapter extends TypeAdapter<PlayList> {
+  @override
+  final int typeId = 0;
+
+  @override
+  PlayList read(BinaryReader reader) {
+    return PlayList(
+      title: reader.readString(),
+      description: reader.readString(),
+      artist: reader.readString(),
+      oneArtist: reader.readBool(),
+      songs: reader.read() as ConcatenatingAudioSource?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, PlayList obj) {
+    writer.writeString(obj.title);
+    writer.writeString(obj.description!);
+    writer.writeString(obj.artist!);
+    writer.writeBool(obj.oneArtist);
+    writer.write(obj.songs);
+  }
+}

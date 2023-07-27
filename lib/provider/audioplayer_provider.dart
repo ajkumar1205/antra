@@ -1,6 +1,7 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:hive/hive.dart';
 
 import '../functions/sharedpreferences/last_played.dart';
 import '../models/playlist.dart';
@@ -65,8 +66,8 @@ class AudioPlayerProvider extends ChangeNotifier {
       return;
     }
     _playlist = pl;
-    final settingBox = await database.openBox(settings);
-    await settingBox.put(lastPlayedList, pl);
+    // final settingBox = Hive.box(settings);
+    // await settingBox.put(lastPlayedList, pl);
     await _player.setAudioSource(
       _playlist!.songs!,
       initialIndex: 0,

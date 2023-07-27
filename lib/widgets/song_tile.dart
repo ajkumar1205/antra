@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:hive/hive.dart';
 
 import '../provider/songlist_provider.dart';
 import '../provider/audioplayer_provider.dart';
 import '../design/color.dart';
+import '../constants/hive_constants.dart';
 
 class SongTile extends StatelessWidget {
   final int index;
@@ -22,6 +25,7 @@ class SongTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final value = Hive.box(favouriteSongs);
     return Card(
       color: subColor.withOpacity(0.95),
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
@@ -50,8 +54,19 @@ class SongTile extends StatelessWidget {
             children: [
               IconButton(
                 iconSize: 25,
-                onPressed: () {},
-                icon: const Icon(Icons.favorite_border_rounded),
+                onPressed: () {
+                  var val = value.get(list.songs![index].id) ?? false;
+                  if (val)
+                    value.delete(list.songs![index].id);
+                  else
+                    value.put(list.songs![index].id, true);
+                },
+                icon: value.get(list.songs![index].id) ?? false
+                    ? const Icon(
+                        Icons.favorite,
+                        color: Colors.red,
+                      )
+                    : const Icon(Icons.favorite_border_outlined),
               ),
               IconButton(
                 iconSize: 25,
