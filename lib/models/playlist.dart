@@ -7,7 +7,7 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 @HiveType(typeId: 0)
-class PlayList extends HiveObject {
+class Playlist extends HiveObject {
   @HiveField(0)
   String title;
 
@@ -28,7 +28,7 @@ class PlayList extends HiveObject {
     ),
   );
 
-  PlayList({
+  Playlist({
     required this.title,
     required this.songs,
     this.description,
@@ -36,7 +36,7 @@ class PlayList extends HiveObject {
     this.artist,
   });
 
-  PlayList.fromList({
+  Playlist.fromList({
     required this.title,
     required this.description,
     required this.oneArtist,
@@ -64,30 +64,5 @@ class PlayList extends HiveObject {
         );
       },
     );
-  }
-}
-
-class PlayListAdapter extends TypeAdapter<PlayList> {
-  @override
-  final int typeId = 0;
-
-  @override
-  PlayList read(BinaryReader reader) {
-    return PlayList(
-      title: reader.readString(),
-      description: reader.readString(),
-      artist: reader.readString(),
-      oneArtist: reader.readBool(),
-      songs: reader.read() as ConcatenatingAudioSource?,
-    );
-  }
-
-  @override
-  void write(BinaryWriter writer, PlayList obj) {
-    writer.writeString(obj.title);
-    writer.writeString(obj.description!);
-    writer.writeString(obj.artist!);
-    writer.writeBool(obj.oneArtist);
-    writer.write(obj.songs);
   }
 }

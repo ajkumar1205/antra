@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 import './design/color.dart';
 import './provider/audioplayer_provider.dart';
-import './provider/songlist_provider.dart';
-import './constants/hive_constants.dart';
+import 'provider/offline_query_provider.dart';
+import './constants/hive.constants.dart';
 import './screens/audio_player_screen.dart';
 import './screens/favourites_screen.dart';
 import './screens/songs_library_screen.dart';
 import './screens/home_screen.dart';
 import './functions/sharedpreferences/last_played.dart';
 import './widgets/animated_app_bar.dart';
-import './constants/bottom_bar_constants.dart';
-import './models/playlist.dart';
+import './constants/bottom_bar.constants.dart';
+import './utils/playlist.adapter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +46,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => AudioPlayerProvider()),
-        ChangeNotifierProvider(create: (context) => SongList())
+        ChangeNotifierProvider(create: (context) => Query())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

@@ -4,9 +4,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../design/color.dart';
-import '../constants/hive_constants.dart';
+import '../constants/hive.constants.dart';
 import '../provider/audioplayer_provider.dart';
-import '../provider/songlist_provider.dart';
+import '../provider/offline_query_provider.dart';
 
 class FavouritesScreen extends StatelessWidget {
   const FavouritesScreen({super.key});
@@ -15,7 +15,7 @@ class FavouritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final favSongBox = Hive.box(favouriteSongs);
     final player = Provider.of<AudioPlayerProvider>(context, listen: false);
-    final list = Provider.of<SongList>(context, listen: false);
+    final q = Provider.of<Query>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -31,15 +31,26 @@ class FavouritesScreen extends StatelessWidget {
         ),
         child: ValueListenableBuilder(
           valueListenable: favSongBox.listenable(),
-          builder: (context, value, _) => ListView.builder(
-            itemCount: list.songs!.length,
-            itemBuilder: (context, index) {
-              if (value.get(list.songs![index].id) ?? false)
-                return SongTile(
-                    player: player, list: list, index: index, onTap: () {});
-              return const SizedBox();
-            },
-          ),
+          builder: (context, value, _) {
+            return FutureBuilder(
+              future: q.getSongs(),
+              builder: (context, snap) {
+                return !snap.hasData
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: snap.data!.length,
+                        itemBuilder: (context, index) {
+                          if (value.get(snap.data![index].id) ?? false)
+                            return SongTile(
+                              song: snap.data![index],
+                              onTap: () {},
+                            );
+                          return const SizedBox();
+                        },
+                      );
+              },
+            );
+          },
         ),
       ),
     );

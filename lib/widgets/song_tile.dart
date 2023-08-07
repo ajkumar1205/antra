@@ -3,23 +3,19 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:hive/hive.dart';
 
-import '../provider/songlist_provider.dart';
+import '../provider/offline_query_provider.dart';
 import '../provider/audioplayer_provider.dart';
 import '../design/color.dart';
-import '../constants/hive_constants.dart';
+import '../constants/hive.constants.dart';
 
 class SongTile extends StatelessWidget {
-  final int index;
-  final SongList list;
-  final AudioPlayerProvider player;
+  final SongModel song;
 
   final Function onTap;
 
   const SongTile({
     super.key,
-    required this.player,
-    required this.list,
-    required this.index,
+    required this.song,
     required this.onTap,
   });
 
@@ -35,10 +31,10 @@ class SongTile extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: textColor,
           child: Hero(
-            tag: list.songs![index].id,
+            tag: song.id,
             child: QueryArtworkWidget(
               quality: 50,
-              id: list.songs![index].id,
+              id: song.id,
               type: ArtworkType.AUDIO,
               nullArtworkWidget: const Icon(Icons.music_note),
               errorBuilder: (_, __, ___) {
@@ -55,13 +51,13 @@ class SongTile extends StatelessWidget {
               IconButton(
                 iconSize: 25,
                 onPressed: () {
-                  var val = value.get(list.songs![index].id) ?? false;
+                  var val = value.get(song.id, defaultValue: false);
                   if (val)
-                    value.delete(list.songs![index].id);
+                    value.delete(song.id);
                   else
-                    value.put(list.songs![index].id, true);
+                    value.put(song.id, true);
                 },
-                icon: value.get(list.songs![index].id) ?? false
+                icon: value.get(song.id, defaultValue: false)
                     ? const Icon(
                         Icons.favorite,
                         color: Colors.red,
@@ -78,14 +74,14 @@ class SongTile extends StatelessWidget {
           ),
         ),
         title: Text(
-          list.songs![index].title,
+          song.title,
           style: const TextStyle(
             color: color,
             fontWeight: FontWeight.w900,
           ),
         ),
         subtitle: Text(
-          list.songs![index].artist!,
+          song.artist!,
           style: const TextStyle(
             color: textColor,
             fontWeight: FontWeight.w700,

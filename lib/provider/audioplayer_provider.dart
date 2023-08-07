@@ -1,18 +1,16 @@
 import 'package:just_audio/just_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:hive/hive.dart';
 
 import '../functions/sharedpreferences/last_played.dart';
 import '../models/playlist.dart';
-import '../constants/hive_constants.dart';
 
 class AudioPlayerProvider extends ChangeNotifier {
-  final AudioPlayer _player = AudioPlayer();
-  int? _songIndex;
-  SongModel? _song;
-  bool _playerInitialised = false;
-  PlayList? _playlist;
+  static final AudioPlayer _player = AudioPlayer();
+  static int? _songIndex;
+  static SongModel? _song;
+  static bool _playerInitialised = false;
+  static Playlist? _playlist;
 
   void init() {
     _player.processingStateStream.listen((event) {
@@ -61,7 +59,7 @@ class AudioPlayerProvider extends ChangeNotifier {
     return _song == null ? "" : _song!.album!;
   }
 
-  void setPlaylistAndAudioSource(PlayList pl) async {
+  void setPlaylistAndAudioSource(Playlist pl) async {
     if (_playlist == pl) {
       return;
     }

@@ -1,4 +1,3 @@
-import 'package:antra/design/color.dart';
 import 'package:flutter/material.dart';
 
 class AnimatedAppBar extends StatelessWidget {

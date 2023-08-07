@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../design/color.dart';
-
 class AddPlaylistButton extends StatelessWidget {
   final Function onTap;
 
@@ -21,7 +19,7 @@ class AddPlaylistButton extends StatelessWidget {
         width: 140,
         margin: EdgeInsets.all(5),
         decoration: BoxDecoration(
-          color: color,
+          color: Colors.black,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(Icons.add, size: 50, color: Colors.white),

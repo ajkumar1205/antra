@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 import '../design/color.dart';
 import '../widgets/home/musicplayer_tag_card.dart';
 import '../widgets/home/playlist_card.dart';
 import '../widgets/home/playlist_container.dart';
 import '../widgets/home/add_playlist_button.dart';
+import '../provider/offline_query_provider.dart';
+import '../functions/helper/create_playlist_dialog.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final q = Provider.of<Query>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -29,71 +34,88 @@ class HomeScreen extends StatelessWidget {
           children: [
             const MusicPlayerTagCard(),
             const SizedBox(height: 20),
-            PlaylistContainer(
-              tag: "Collections",
-              children: [
-                PlaylistCard(
-                  name: "Love",
-                  color: Colors.green,
-                ),
-                PlaylistCard(
-                  name: "Hip Hop",
-                  color: Colors.yellow,
-                ),
-                PlaylistCard(
-                  name: "Punjabi",
-                  color: Colors.deepOrange,
-                ),
-                AddPlaylistButton(onTap: () {}),
-              ],
+            FutureBuilder(
+              future: q.getPlaylists(),
+              builder: (context, snap) {
+                return PlaylistContainer(
+                  tag: "Playlists",
+                  children: [
+                    if (snap.hasData)
+                      for (PlaylistModel list in snap.data!)
+                        PlaylistCard(
+                          id: list.id,
+                          name: list.playlist,
+                          type: ArtworkType.PLAYLIST,
+                        ),
+                    AddPlaylistButton(onTap: () {}),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 20),
-            PlaylistContainer(
-              tag: "By Artist",
-              children: [
-                PlaylistCard(
-                  name: "Atif Aslam",
-                  color: Colors.amber,
-                ),
-                PlaylistCard(
-                  name: "Arijit Singh",
-                  color: Colors.green,
-                ),
-                PlaylistCard(
-                  name: "KK",
-                  color: Colors.blue,
-                ),
-                PlaylistCard(
-                  name: "Rahat Fateh Ali Khan",
-                  color: Colors.indigo,
-                ),
-                AddPlaylistButton(onTap: () {}),
-              ],
+            FutureBuilder(
+              future: q.getArtists(),
+              builder: (context, snap) {
+                return PlaylistContainer(
+                  tag: "Artists",
+                  children: [
+                    if (snap.hasData)
+                      for (ArtistModel artist in snap.data!)
+                        PlaylistCard(
+                          id: artist.id,
+                          name: artist.artist,
+                          type: ArtworkType.ARTIST,
+                        ),
+                    // AddPlaylistButton(onTap: () {}),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 20),
-            PlaylistContainer(
-              tag: "By Album",
-              children: [
-                PlaylistCard(
-                  name: "Qismat",
-                  color: Colors.orange,
-                ),
-                PlaylistCard(
-                  name: "RockStar",
-                  color: Colors.brown,
-                ),
-                PlaylistCard(
-                  name: "Ashiqui 2",
-                  color: Colors.red,
-                ),
-                AddPlaylistButton(onTap: () {}),
-              ],
+            FutureBuilder(
+              future: q.getAlbums(),
+              builder: (context, snap) {
+                return PlaylistContainer(
+                  tag: "Albums",
+                  children: [
+                    if (snap.hasData)
+                      for (AlbumModel album in snap.data!)
+                        PlaylistCard(
+                          id: album.id,
+                          name: album.album,
+                          type: ArtworkType.ALBUM,
+                        ),
+                    // AddPlaylistButton(onTap: () {}),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            FutureBuilder(
+              future: q.getGenres(),
+              builder: (context, snap) {
+                return PlaylistContainer(
+                  tag: "Genres",
+                  children: [
+                    if (snap.hasData)
+                      for (GenreModel genre in snap.data!)
+                        PlaylistCard(
+                          id: genre.id,
+                          name: genre.genre,
+                          type: ArtworkType.GENRE,
+                        ),
+                    // AddPlaylistButton(onTap: () {}),
+                  ],
+                );
+              },
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showCreatePlaylistDialog(context, q);
+        },
         backgroundColor: color,
         child: Icon(Icons.add, color: Colors.white, size: 30),
         shape: CircleBorder(),

@@ -1,5 +1,3 @@
-import 'package:hive/hive.dart';
-
 // DATABASE OBJECT WHICH WOULD WE USED THROUGHOUT THE PROJECT
 // late BoxCollection database;
 const antra = 'AntraDataBase';

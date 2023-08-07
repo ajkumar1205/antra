@@ -37,6 +37,8 @@ dependencies:
   just_audio: ^0.9.34
   just_audio_background: ^0.0.1-beta.10
 
+  audio_service: ^0.18.10
+
   path_provider: ^2.0.15
   provider: ^6.0.5
   shared_preferences: ^2.2.0
