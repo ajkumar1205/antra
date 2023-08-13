@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../provider/audioplayer_provider.dart';
 import '../../design/color.dart';
 
 class PlayPauseButton extends StatelessWidget {
@@ -11,7 +9,6 @@ class PlayPauseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final player = Provider.of<AudioPlayerProvider>(context);
     return CircleAvatar(
       // radius: 40,
       minRadius: 0,
@@ -21,9 +18,9 @@ class PlayPauseButton extends StatelessWidget {
         color: Colors.white,
         splashColor: Colors.transparent,
         onPressed: () {
-          player.togglePlayer();
+          // player.togglePlayer();
         },
-        icon: Icon(player.playing ? Icons.pause : Icons.play_arrow),
+        icon: Icon(true ? Icons.pause : Icons.play_arrow),
       ),
     );
   }

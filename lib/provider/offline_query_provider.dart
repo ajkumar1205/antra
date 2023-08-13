@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:on_audio_query/on_audio_query.dart';
-// import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
-class Query extends ChangeNotifier {
+import 'package:audio_service/audio_service.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:path_provider/path_provider.dart';
+
+class Query {
   static final OnAudioQuery _audioQuery = OnAudioQuery();
 
   OnAudioQuery get audioQuery {
@@ -28,6 +30,7 @@ class Query extends ChangeNotifier {
   }
 
   Future<bool> createPlaylist(String name) async {
+    if (name.length < 3) return false;
     return await _audioQuery.createPlaylist(name);
   }
 
@@ -137,5 +140,33 @@ class Query extends ChangeNotifier {
 
   Future<bool> removeItemFromPlaylist(int playlistId, int songId) async {
     return await _audioQuery.removeFromPlaylist(playlistId, songId);
+  }
+
+  Future<String> artworkPath(int songId, {ArtworkType? type}) async {
+    final tempDir = await getTemporaryDirectory();
+    File file = File("${tempDir.path}/$songId.png");
+    if (!await file.exists()) {
+      final artwork =
+          await _audioQuery.queryArtwork(songId, type ?? ArtworkType.AUDIO);
+      file.writeAsBytesSync(artwork!);
+    }
+    return file.path;
+  }
+
+  Future<MediaItem> getMediaItem(SongModel song) async {
+    MediaItem s = MediaItem(
+      id: song.id.toString(),
+      title: song.title,
+      album: song.album,
+      artist: song.artist,
+      artUri: Uri.parse(await artworkPath(song.id)),
+      genre: song.genre,
+      duration: Duration(milliseconds: song.duration!),
+      extras: {
+        'path': song.data,
+        'composer': song.composer,
+      },
+    );
+    return s;
   }
 }

@@ -1,10 +1,13 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:hive/hive.dart';
 
 import '../provider/offline_query_provider.dart';
-import '../provider/audioplayer_provider.dart';
+// import '../provider/audioplayer_provider.dart';
 import '../design/color.dart';
 import '../constants/hive.constants.dart';
 
@@ -28,17 +31,37 @@ class SongTile extends StatelessWidget {
       child: ListTile(
         horizontalTitleGap: 10,
         iconColor: textColor,
-        leading: CircleAvatar(
-          backgroundColor: textColor,
+        leading: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
           child: Hero(
+            transitionOnUserGestures: true,
             tag: song.id,
-            child: QueryArtworkWidget(
-              quality: 50,
-              id: song.id,
-              type: ArtworkType.AUDIO,
-              nullArtworkWidget: const Icon(Icons.music_note),
-              errorBuilder: (_, __, ___) {
-                return const Icon(Icons.music_note);
+            // child: QueryArtworkWidget(
+            //   quality: 50,
+            //   id: song.id,
+            //   type: ArtworkType.AUDIO,
+            //   nullArtworkWidget: const Icon(Icons.music_note),
+            //   errorBuilder: (_, __, ___) {
+            //     return const Icon(Icons.music_note);
+            //   },
+            // ),
+            child: FutureBuilder<String>(
+              future: Query().artworkPath(song.id),
+              builder: (context, snap) {
+                return snap.hasData
+                    ? Image.file(
+                        File(snap.data!),
+                        fit: BoxFit.fill,
+                      )
+                    : Container(
+                        width: 55,
+                        height: 55,
+                        color: Colors.black,
+                        child: Icon(
+                          CupertinoIcons.music_albums,
+                          color: Colors.white,
+                        ),
+                      );
               },
             ),
           ),
@@ -75,6 +98,7 @@ class SongTile extends StatelessWidget {
         ),
         title: Text(
           song.title,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: color,
             fontWeight: FontWeight.w900,
@@ -82,6 +106,7 @@ class SongTile extends StatelessWidget {
         ),
         subtitle: Text(
           song.artist!,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: textColor,
             fontWeight: FontWeight.w700,

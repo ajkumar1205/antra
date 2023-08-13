@@ -10,6 +10,5 @@ const colors = [
   Colors.indigoAccent,
   Colors.yellow,
   Colors.blueGrey,
-  Colors.black,
   Colors.purple,
 ];

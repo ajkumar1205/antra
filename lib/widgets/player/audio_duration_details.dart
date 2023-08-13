@@ -1,101 +1,66 @@
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../../provider/audioplayer_provider.dart';
 import '../../design/color.dart';
+import '../../utils/audioplayer_handler_helper.dart';
 
-class AudioDurationDetail extends StatefulWidget {
-  const AudioDurationDetail({super.key});
-
-  @override
-  State<AudioDurationDetail> createState() => _AudioDurationDetailState();
-}
-
-class _AudioDurationDetailState extends State<AudioDurationDetail> {
-  @override
-  Widget build(BuildContext context) {
-    final player = Provider.of<AudioPlayerProvider>(context);
-    return StreamBuilder<Duration>(
-      stream: player.position(),
-      builder: (context, snapshot) {
-        double value = snapshot.hasData
-            ? snapshot.data!.inSeconds.toDouble()
-            : 0.toDouble();
-        return Column(
-          children: [
-            SongDurationSlider(value: value, player: player),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // CURRENT TIME OF AUDIO
-                  Text(
-                    snapshot.hasData
-                        ? "${snapshot.data!.inMinutes}:${(snapshot.data!.inSeconds) % 60}"
-                        : "00:00",
-                    style: const TextStyle(
-                      backgroundColor: Colors.black,
-                      fontSize: 13,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  // LENGTH OF THE SONG
-                  Text(
-                    "${player.songDuration.inMinutes}:${(player.songDuration.inSeconds) % 60}",
-                    style: const TextStyle(
-                      backgroundColor: Colors.black,
-                      fontSize: 13,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        );
-      },
-    );
-  }
-}
-
-class SongDurationSlider extends StatefulWidget {
-  const SongDurationSlider({
+class AudioDurationDetail extends StatelessWidget {
+  final Duration? pos;
+  final MediaItem? item;
+  const AudioDurationDetail({
     super.key,
-    required this.value,
-    required this.player,
+    required this.pos,
+    required this.item,
   });
 
-  final double value;
-  final AudioPlayerProvider player;
-
-  @override
-  State<SongDurationSlider> createState() => _SongDurationSliderState();
-}
-
-class _SongDurationSliderState extends State<SongDurationSlider> {
-  double val = 0;
   @override
   Widget build(BuildContext context) {
-    val = widget.value;
-    return Slider(
-      value: val,
-      onChanged: (v) {
-        setState(() {
-          val = v;
-        });
-      },
-      onChangeEnd: (val) {
-        print("Position Should be $val");
-        widget.player.seekToPosition(Duration(milliseconds: val.toInt()));
-      },
-      min: 0,
-      max: (widget.player.songDuration.inMilliseconds / 1000),
-      divisions: widget.player.songDuration.inMilliseconds ~/ 1000,
-      thumbColor: color,
-      activeColor: color,
+    return Column(
+      children: [
+        Slider(
+          value: pos != null ? pos!.inSeconds.toDouble() : 0,
+          onChanged: (v) {
+            AudioHandlerHelper.audioHandler.seek(Duration(seconds: v.toInt()));
+          },
+          min: 0,
+          max: item != null ? item!.duration!.inSeconds.toDouble() : 1.0,
+          divisions: item != null ? item!.duration!.inSeconds : 1,
+          thumbColor: color,
+          activeColor: color,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 22),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // CURRENT TIME OF AUDIO
+              Text(
+                pos != null
+                    ? "${pos!.inMinutes}:${(pos!.inSeconds) % 60}"
+                    : "00:00",
+                style: const TextStyle(
+                  backgroundColor: Colors.black,
+                  fontSize: 13,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              // LENGTH OF THE SONG
+              Text(
+                item != null
+                    ? "${item!.duration!.inMinutes}:${(item!.duration!.inSeconds) % 60}"
+                    : "00:00",
+                style: const TextStyle(
+                  backgroundColor: Colors.black,
+                  fontSize: 13,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 }

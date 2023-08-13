@@ -7,9 +7,8 @@ class AnimatedAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
+    return Container(
       height: 74,
-      duration: Duration(milliseconds: 400),
       margin: EdgeInsets.only(left: 25, right: 25, top: 20, bottom: 5),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(

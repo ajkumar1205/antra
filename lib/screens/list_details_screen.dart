@@ -1,14 +1,11 @@
-import 'package:antra/provider/audioplayer_provider.dart';
-import 'package:antra/widgets/player/player_button_states.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../provider/offline_query_provider.dart';
 import '../functions/helper/get_function_from_type.dart';
 import '../widgets/song_tile.dart';
 
-class ListDetailsScreen extends StatelessWidget {
+class ListDetailsScreen extends StatefulWidget {
   final int id;
   final String name;
   final ArtworkType type;
@@ -21,9 +18,25 @@ class ListDetailsScreen extends StatelessWidget {
   });
 
   @override
+  State<ListDetailsScreen> createState() => _ListDetailsScreenState();
+}
+
+class _ListDetailsScreenState extends State<ListDetailsScreen> {
+  Query? q;
+  @override
+  void initState() {
+    super.initState();
+    q = Query();
+    takePermissions();
+    setState(() {});
+  }
+
+  void takePermissions() async {
+    await q!.takePermission();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final q = Provider.of<Query>(context);
-    final player = Provider.of<AudioPlayerProvider>(context);
     return Scaffold(
       extendBody: true,
       extendBodyBehindAppBar: true,
@@ -41,13 +54,13 @@ class ListDetailsScreen extends StatelessWidget {
           ),
         ),
         child: FutureBuilder<List<SongModel>>(
-            future: getFunction(q, type)(id),
+            future: getFunction(q!, widget.type)(widget.id),
             builder: (context, snap) {
               return CustomScrollView(
                 slivers: [
                   SliverAppBar(
                     title: Text(
-                      name,
+                      widget.name,
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     floating: true,

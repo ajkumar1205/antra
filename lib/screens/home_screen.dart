@@ -8,14 +8,32 @@ import '../widgets/home/playlist_card.dart';
 import '../widgets/home/playlist_container.dart';
 import '../widgets/home/add_playlist_button.dart';
 import '../provider/offline_query_provider.dart';
-import '../functions/helper/create_playlist_dialog.dart';
+import '../provider/playlists_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Query? q;
+  final key = GlobalKey();
+  @override
+  void initState() {
+    super.initState();
+    q = Query();
+    takePermissions();
+    setState(() {});
+  }
+
+  void takePermissions() async {
+    await q!.takePermission();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final q = Provider.of<Query>(context, listen: false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -34,27 +52,57 @@ class HomeScreen extends StatelessWidget {
           children: [
             const MusicPlayerTagCard(),
             const SizedBox(height: 20),
-            FutureBuilder(
-              future: q.getPlaylists(),
-              builder: (context, snap) {
-                return PlaylistContainer(
-                  tag: "Playlists",
-                  children: [
-                    if (snap.hasData)
-                      for (PlaylistModel list in snap.data!)
-                        PlaylistCard(
-                          id: list.id,
-                          name: list.playlist,
-                          type: ArtworkType.PLAYLIST,
-                        ),
-                    AddPlaylistButton(onTap: () {}),
-                  ],
-                );
-              },
-            ),
+            Consumer<Playlists>(builder: (context, instance, _) {
+              return FutureBuilder(
+                future: q!.getPlaylists(),
+                builder: (context, snap) {
+                  return PlaylistContainer(
+                    key: key,
+                    tag: "Playlists",
+                    children: [
+                      if (snap.hasData)
+                        for (PlaylistModel list in snap.data!)
+                          PlaylistCard(
+                            id: list.id,
+                            name: list.playlist,
+                            type: ArtworkType.PLAYLIST,
+                            onLongPress: () {
+                              final RenderBox box = key.currentContext!
+                                  .findRenderObject() as RenderBox;
+                              final offset = box.localToGlobal(Offset.zero);
+
+                              showMenu(
+                                context: context,
+                                position: RelativeRect.fromSize(
+                                  Rect.fromCircle(
+                                    center: offset,
+                                    radius: 20,
+                                  ),
+                                  Size.fromRadius(25),
+                                ),
+                                items: [
+                                  PopupMenuItem(
+                                    child: IconButton(
+                                      color: Colors.black,
+                                      icon: Icon(Icons.delete),
+                                      onPressed: () {},
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                      AddPlaylistButton(onTap: () {
+                        instance.showCreatePlaylistDialog(context, q!);
+                      }),
+                    ],
+                  );
+                },
+              );
+            }),
             const SizedBox(height: 20),
             FutureBuilder(
-              future: q.getArtists(),
+              future: q!.getArtists(),
               builder: (context, snap) {
                 return PlaylistContainer(
                   tag: "Artists",
@@ -73,7 +121,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             FutureBuilder(
-              future: q.getAlbums(),
+              future: q!.getAlbums(),
               builder: (context, snap) {
                 return PlaylistContainer(
                   tag: "Albums",
@@ -92,7 +140,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             FutureBuilder(
-              future: q.getGenres(),
+              future: q!.getGenres(),
               builder: (context, snap) {
                 return PlaylistContainer(
                   tag: "Genres",
@@ -112,15 +160,16 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showCreatePlaylistDialog(context, q);
-        },
-        backgroundColor: color,
-        child: Icon(Icons.add, color: Colors.white, size: 30),
-        shape: CircleBorder(),
-      ),
-      floatingActionButtonLocation: FabPosition(80, 150),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Provider.of<Playlists>(context, listen: false)
+      //         .showCreatePlaylistDialog(context, q!);
+      //   },
+      //   backgroundColor: color,
+      //   child: Icon(Icons.add, color: Colors.white, size: 30),
+      //   shape: CircleBorder(),
+      // ),
+      // floatingActionButtonLocation: FabPosition(80, 150),
     );
   }
 }

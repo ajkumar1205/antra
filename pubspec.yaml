@@ -31,7 +31,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # permission_handler: ^10.4.3
 
+  rxdart: ^0.27.7
 
   on_audio_query: ^2.9.0
   just_audio: ^0.9.34

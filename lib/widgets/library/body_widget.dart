@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:provider/provider.dart';
 
 import '../../provider/offline_query_provider.dart';
-import '../../provider/audioplayer_provider.dart';
 import '../song_tile.dart';
 import '../../constants/hive.constants.dart';
+import '../../provider/audioplayer_handler.dart';
+import '../../utils/audioplayer_handler_helper.dart';
 
 class Body extends StatelessWidget {
   const Body({
@@ -14,14 +14,13 @@ class Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final player = Provider.of<AudioPlayerProvider>(context, listen: false);
-    final q = Provider.of<Query>(context);
     final favSongBox = Hive.box(favouriteSongs);
-    // player.setPlaylistAndAudioSource(plist);
+    final Query q = Query();
+    final AudioPlayerHandler audiohandler = AudioHandlerHelper.audioHandler;
+
     return FutureBuilder(
       future: q.getSongs(),
       builder: (context, data) {
-        q.takePermission();
         final list = data.data;
         return list == null
             ? const Center(child: CircularProgressIndicator())
@@ -33,7 +32,11 @@ class Body extends StatelessWidget {
                     builder: (context, value, _) {
                       return SongTile(
                         song: list[index],
-                        onTap: () {},
+                        onTap: () async {
+                          await audiohandler.playMediaItem(
+                            await q.getMediaItem(list[index]),
+                          );
+                        },
                       );
                     },
                   );

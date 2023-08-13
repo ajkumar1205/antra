@@ -1,35 +1,29 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'dart:io';
 
-import '../../provider/audioplayer_provider.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
 
 class AudioBanner extends StatelessWidget {
+  final MediaItem? item;
   const AudioBanner({
     super.key,
+    required this.item,
   });
 
   @override
   Widget build(BuildContext context) {
-    final value = Provider.of<AudioPlayerProvider>(context, listen: false);
     return Hero(
-      tag: value.songId,
-      child: QueryArtworkWidget(
-        id: value.songId,
-        type: ArtworkType.AUDIO,
-        artworkFit: BoxFit.fill,
-        artworkBorder: BorderRadius.circular(20),
-        nullArtworkWidget: const Icon(
-          Icons.music_note,
-          color: Colors.white,
-          size: 150,
-        ),
-        errorBuilder: (_, __, ___) => const Icon(
-          Icons.music_note,
-          color: Colors.white,
-          size: 150,
-        ),
-      ),
+      tag: item != null ? item!.id : 0,
+      child: item != null
+          ? Image.file(
+              File.fromUri(item!.artUri!),
+              fit: BoxFit.fill,
+            )
+          : Icon(
+              Icons.music_note,
+              color: Colors.white,
+              size: 150,
+            ),
     );
   }
 }

@@ -6,5 +6,5 @@ import '../../constants/color_list.constant.dart';
 
 Color getColor() {
   Random rand = Random();
-  return colors[rand.nextInt(11)];
+  return colors[rand.nextInt(10)];
 }
