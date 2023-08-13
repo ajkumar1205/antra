@@ -15,9 +15,12 @@ class AudioBanner extends StatelessWidget {
     return Hero(
       tag: item != null ? item!.id : 0,
       child: item != null
-          ? Image.file(
-              File.fromUri(item!.artUri!),
-              fit: BoxFit.fill,
+          ? ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: Image.file(
+                File.fromUri(item!.artUri!),
+                fit: BoxFit.fill,
+              ),
             )
           : Icon(
               Icons.music_note,
